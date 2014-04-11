@@ -8,8 +8,8 @@ class Player(pygame.sprite.Sprite):
                          pygame.image.load("rsc/player/player.png")]
         self.upImages = [pygame.transform.scale(self.upImages[0], blocksize),
                          pygame.transform.scale(self.upImages[1], blocksize)]
-        self.downImages = [pygame.image.load("rsc/player/player.png"),
-                         pygame.image.load("rsc/player/player.png")]
+        self.downImages = [pygame.image.load("rsc/player/playerDown.png"),
+                         pygame.image.load("rsc/player/playerDown2.png")]
         self.downImages = [pygame.transform.scale(self.downImages[0], blocksize),
                          pygame.transform.scale(self.downImages[1], blocksize)]
         self.rightImages = [pygame.image.load("rsc/player/playerRight.png"),

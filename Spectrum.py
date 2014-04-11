@@ -6,6 +6,7 @@ from Block import Block
 from Player import Player
 from HardBlock import HardBlock
 from PortalBlock import PortalBlock
+from ShadeBlock import ShadeBlock
 from Spike import Spike
 from Enemy import Enemy
 from Background import Background
@@ -25,6 +26,7 @@ bgColor = r,g,b = 0,0,0
 blocks = pygame.sprite.Group()
 hardBlocks = pygame.sprite.Group()
 portalBlocks = pygame.sprite.Group()
+shadeBlocks = pygame.sprite.Group()
 spikes = pygame.sprite.Group()
 enemies = pygame.sprite.Group()
 backgrounds = pygame.sprite.Group()
@@ -35,6 +37,7 @@ Player.containers = (all, players)
 Block.containers = (all, blocks)
 HardBlock.containers = (all, hardBlocks, blocks)
 PortalBlock.containers = (all, portalBlocks, blocks)
+ShadeBlock.containers = (all, shadeBlocks, blocks)
 Spike.containers = (all, spikes, blocks)
 Enemy.containers = (all, enemies)
 Background.containers = (all, blocks)
@@ -104,6 +107,10 @@ def loadLevel(level):
                 Spike("rsc/blocks/Obstacles/spike.png",
                       [(x*blocksize[0])+blocksize[0]/2, (y*blocksize[1])+blocksize[1]/2], 
                       blocksize)
+            elif c == "s":
+                ShadeBlock("rsc/blocks/shade.png",
+                      [(x*blocksize[0])+blocksize[0]/2, (y*blocksize[1])+blocksize[1]/2], 
+                      blocksize)
                       
     f = open(level+".tng", 'r')
     lines = f.readlines()
@@ -136,15 +143,10 @@ def loadLevel(level):
      
     
 def loadNextLevel(level):
-    if level < len(levels)-1:
-        level += 1
-    else:
-        level = 0
     for each in all.sprites():
         each.kill()
     bg = Background("rsc/bg/mainbg.png", size)
     screen.blit(bg.image, bg.rect)
-    print "??????????????????", level
     loadLevel(levels[level])
     return level
     
@@ -192,6 +194,8 @@ while True:
         playersHitBlocks = pygame.sprite.groupcollide(players, hardBlocks, False, False)
         playersHitPortalBlocks = pygame.sprite.groupcollide(players, portalBlocks, False, False)
         playersHitSpikes = pygame.sprite.groupcollide(players, spikes, False, False)
+        playersHitShadeBlocks = pygame.sprite.groupcollide(players, shadeBlocks, False, False)
+        
         enemiesHitBlocks = pygame.sprite.groupcollide(enemies, hardBlocks, False, False)
         enemiesHitEnemies = pygame.sprite.groupcollide(enemies, enemies, False, False)
         
@@ -202,12 +206,16 @@ while True:
                 
         for player in playersHitPortalBlocks:
             for block in playersHitPortalBlocks[player]:
-                level = loadNextLevel(level)
+                level = loadNextLevel(level+1)
                 player1 = players.sprites()[0]
                 
         for player in playersHitSpikes:
             for block in playersHitSpikes[player]:
                 player1.living = False
+        
+        for player in playersHitShadeBlocks:
+            for block in playersHitShadeBlocks[player]:
+                player.collideBlock(block)
         
         for enemy in enemiesHitBlocks:
             for block in enemiesHitBlocks[enemy]:
@@ -230,8 +238,8 @@ while True:
         pygame.display.flip()
         clock.tick(30)
         
-    bgImage = pygame.image.load("rsc/screen/EndScreen.png")    
-    while start and not player.living:
+    bgImage = pygame.image.load("rsc/screen/EndScreen.png") 
+    while start and not player.living:   
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 sys.exit()
@@ -241,7 +249,12 @@ while True:
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_RETURN or event.key == pygame.K_SPACE:
                     start = False
-
+                    level = 0
+                    loadNextLevel(level)
+                    player1 = players.sprites()[0]
+        screen.blit(bgImage, bgRect)
+        pygame.display.flip()
+        clock.tick(60)
 
 
 
