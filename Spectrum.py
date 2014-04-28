@@ -10,6 +10,7 @@ from ShadeBlock import ShadeBlock
 from Spike import Spike
 from Enemy import Enemy
 from Background import Background
+from Color import Color
 
 clock = pygame.time.Clock()
 
@@ -173,6 +174,23 @@ while True:
             if event.type == pygame.QUIT:
                 sys.exit()
             if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_KP0:
+                    player1.change("white")
+                if event.key == pygame.K_KP1:
+                    player1.change("black")
+                if event.key == pygame.K_KP2:
+                    player1.change("red")
+                if event.key == pygame.K_KP3:
+                    player1.change("orange")
+                if event.key == pygame.K_KP4:
+                    player1.change("yellow")
+                if event.key == pygame.K_KP5:
+                    player1.change("green")
+                if event.key == pygame.K_KP6:
+                    player1.change("blue")
+                if event.key == pygame.K_KP7:
+                    player1.change("purple")
+                    
                 if event.key == pygame.K_d or event.key == pygame.K_RIGHT:
                     player1.direction("right")
                 if event.key == pygame.K_a or event.key == pygame.K_LEFT:

@@ -1,26 +1,23 @@
 import pygame, sys, math
+from Color import Color
+
 
 class Player(pygame.sprite.Sprite):
     def __init__(self, pos = (0,0), blocksize = [50,50], screensize = [800,600]):
         pygame.sprite.Sprite.__init__(self, self.containers)
         self.screensize = screensize
-        self.upImages = [pygame.image.load("rsc/player/player.png"),
-                         pygame.image.load("rsc/player/player.png")]
-        self.upImages = [pygame.transform.scale(self.upImages[0], blocksize),
-                         pygame.transform.scale(self.upImages[1], blocksize)]
-        self.downImages = [pygame.image.load("rsc/player/playerDown.png"),
-                         pygame.image.load("rsc/player/playerDown2.png")]
-        self.downImages = [pygame.transform.scale(self.downImages[0], blocksize),
-                         pygame.transform.scale(self.downImages[1], blocksize)]
-        self.rightImages = [pygame.image.load("rsc/player/playerRight.png"),
-                         pygame.image.load("rsc/player/playerRight2.png")]
-        self.rightImages = [pygame.transform.scale(self.rightImages[0], blocksize),
-                         pygame.transform.scale(self.rightImages[1], blocksize)]
-        self.leftImages = [pygame.image.load("rsc/player/playerLeft.png"),
-                         pygame.image.load("rsc/player/playerLeft2.png")]
-        self.leftImages = [pygame.transform.scale(self.leftImages[0], blocksize),
-                         pygame.transform.scale(self.leftImages[1], blocksize)]
-        self.images = self.rightImages
+        
+        self.colors = {"white": Color("white", blocksize),
+                        "black": Color("black", blocksize), 
+                        "red": Color("red", blocksize)} 
+                        #"orange": Color("orange", blocksize), 
+                        #"yellow": Color("yellow", blocksize),  
+                        #"green":  Color("green", blocksize),
+                        #"blue":  Color("blue", blocksize),
+                        #"purple":  Color("purple", blocksize)}                      
+        self.color = self.colors["white"]
+        
+        self.images = self.color.rightImages
         self.frame = 0
         self.maxFrame = len(self.images) - 1
         self.waitCount = 0
@@ -48,12 +45,16 @@ class Player(pygame.sprite.Sprite):
         self.living = True
         self.place(pos)
         
+        
     def place(self, pos):
         self.rect.center = pos
         
     def fixLocation(self, x, y):
         pass
-        
+    
+    def colorChange(color):    
+        self.color = self.colors[color]
+                 
     def update(*args):
         self = args[0]
         self.collideWall(self.screensize)
@@ -64,13 +65,13 @@ class Player(pygame.sprite.Sprite):
     def animate(self):
         if self.headingChanged:
             if self.lastHeading == "up":
-                self.images = self.upImages
+                self.images = self.color.upImages
             if self.lastHeading == "down":
-                self.images = self.downImages
+                self.images = self.color.downImages
             if self.lastHeading == "right":
-                self.images = self.rightImages
+                self.images = self.color.rightImages
             if self.lastHeading == "left":
-                self.images = self.leftImages
+                self.images = self.color.leftImages
             self.image = self.images[self.frame]
         
         if self.waitCount < self.waitCountMax:
@@ -119,6 +120,13 @@ class Player(pygame.sprite.Sprite):
             self.speedy = 0
         elif self.rect.bottom > size[1] and self.headingy == "down":
             self.speedy = 0
+       
+    def change(self, color):
+        if color in self.colors.keys():
+            self.color = self.colors[color]
+            self.headingChanged = True
+        else:
+            print "not a color", self.colors.keys()
     
     def collideBlock(self, block):
         print self.rect, self.headingx, self.headingy

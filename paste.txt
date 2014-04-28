@@ -1,0 +1,7 @@
+                       "black": Color("black", blocksize), 
+                       "red": Color("red", blocksize), 
+                       "orange": Color("orange", blocksize), 
+                       "yellow": Color("yellow", blocksize),  
+                       "green":  Color("green", blocksize),
+                       "blue":  Color("blue", blocksize),
+                       "purple":  Color("purple", blocksize)}"""
