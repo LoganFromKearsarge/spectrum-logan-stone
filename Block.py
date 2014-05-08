@@ -13,8 +13,6 @@ class Block(pygame.sprite.Sprite):
         self.place(pos)
         self.speedx = 0
         self.speedy = 0
-        self.scrollingx = False
-        self.scrollingy = False
         
     def place(self, pos):
         self.rect.center = pos
@@ -27,16 +25,7 @@ class Block(pygame.sprite.Sprite):
         self = args[0]
         self.speedx = args[2]
         self.speedy = args[3]
-        self.scrollingx = args[4]
-        self.scrollingy = args[5]
-        self.move()
         
-    def move(self):
-        if self.scrollingx:
-            self.x -= self.speedx
-        if self.scrollingy:
-            self.y -= self.speedy
-            
         self.rect.center = (round(self.x), round(self.y))
         
     

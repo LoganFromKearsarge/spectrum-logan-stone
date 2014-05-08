@@ -1,4 +1,4 @@
-import pygame, sys, math
+import pygame, sys, math, time
 from Color import Color
 
 
@@ -8,13 +8,7 @@ class Player(pygame.sprite.Sprite):
         self.screensize = screensize
         
         self.colors = {"white": Color("white", blocksize),
-                        "black": Color("black", blocksize), 
-                        "red": Color("red", blocksize)} 
-                        #"orange": Color("orange", blocksize), 
-                        #"yellow": Color("yellow", blocksize),  
-                        #"green":  Color("green", blocksize),
-                        #"blue":  Color("blue", blocksize),
-                        #"purple":  Color("purple", blocksize)}                      
+                        "black": Color("black", blocksize)}                      
         self.color = self.colors["white"]
         
         self.images = self.color.rightImages
@@ -30,13 +24,6 @@ class Player(pygame.sprite.Sprite):
         self.speedy = 0
         self.realx = pos[0]
         self.realy = pos[1]
-        self.x = screensize[0]/2
-        self.y = screensize[1]/2
-        self.offsetx = self.x - self.realx
-        self.offsety = self.y - self.realy
-        self.scrollingx = False
-        self.scrollingy = False
-        self.scrollBoundry = 200
         self.headingx = "right"
         self.headingy = "up"
         self.lastHeading = "right"
@@ -44,6 +31,14 @@ class Player(pygame.sprite.Sprite):
         self.radius = self.rect.width/2
         self.living = True
         self.place(pos)
+        self.g = blocksize[0]/10
+        self.jumping = False
+        self.jumpSpeed = 0
+        self.jumpSpeedMax = 50
+        self.fallSpeedMax = int(blocksize[0]/2) -2
+        self.onfloor = False
+        self.floor = screensize[1]
+        self.touchFloor = False
         
         
     def place(self, pos):
@@ -58,9 +53,12 @@ class Player(pygame.sprite.Sprite):
     def update(*args):
         self = args[0]
         self.collideWall(self.screensize)
+        if (self.rect.bottom < self.floor) and self.headingy == "none":
+            self.headingy = "down"
         self.animate()
         self.move()
         self.headingChanged = False
+        self.touchFloor = False
         
     def animate(self):
         if self.headingChanged:
@@ -86,10 +84,18 @@ class Player(pygame.sprite.Sprite):
             
         
     def move(self):
+        if not self.touchFloor:
+            self.headingy = "down"
+            print "falling", self.speedy
+        if self.headingy == "down":
+            if self.speedy < self.fallSpeedMax:
+                self.speedy += self.g
+            else:
+                self.speedy = self.fallSpeedMax
+                
         self.realx += self.speedx
         self.realy += self.speedy
-        self.x = self.realx
-        self.y = self.realy
+        
         """
         if not self.scrollingx:
             self.x += self.speedx
@@ -109,7 +115,7 @@ class Player(pygame.sprite.Sprite):
         else:
             self.scrollingy = False
         """    
-        self.rect.center = (round(self.x), round(self.y))
+        self.rect.center = (round(self.realx), round(self.realy))
         
     def collideWall(self, size):
         if self.rect.left < 0 and self.headingx == "left":
@@ -129,27 +135,37 @@ class Player(pygame.sprite.Sprite):
             print "not a color", self.colors.keys()
     
     def collideBlock(self, block):
+        #time.sleep(.25)
         print self.rect, self.headingx, self.headingy
-        if self.realx < block.realx and self.headingx == "right":
-            self.speedx = 0
-            self.realx -= 1
-            self.x -= 1
-            print "hit right"
-        if self.realx > block.realx and self.headingx == "left":
-            self.speedx = 0
-            self.realx += 1
-            self.x += 1
-            print "hit left"
-        if self.realy > block.realy and self.headingy == "up":
-            self.speedy = 0
-            self.realy += 1
-            self.y += 1
-            print "hit up"
-        if self.realy < block.realy and self.headingy == "down":
-            self.speedy = 0
-            self.realy -= 1
-            self.y -= 1
-            print "hit down"
+        if self.floor == block.rect.top + 2 and self.headingy == "none":
+            self.touchFloor = True
+            print "on the floor"
+            self.jumping = False
+        else:
+            if self.realx < block.realx and self.headingx == "right":
+                self.speedx = 0
+                self.realx -= 1
+                print "hit right"
+            if self.realx > block.realx and self.headingx == "left":
+                self.speedx = 0
+                self.realx += 1
+                print "hit left"
+            if self.realy > block.realy and self.headingy == "up":
+                self.speedy = 0
+                self.realy += 1
+                print "hit up"
+            if self.realy < block.realy and self.headingy == "down":
+                self.touchFloor = True
+                self.speedy = 0
+                self.headingy = "none"
+                self.floor = block.rect.top+2
+                self.realy = self.floor - self.rect.height/2
+                print "///////////////////////hit down"
+            
+    def collideSpikeBlock(self, block):
+        if self.rect.bottom > block.rect.center[1]:
+            self.living = False
+            
    
     def direction(self, dir):
         if dir == "right":
@@ -168,6 +184,14 @@ class Player(pygame.sprite.Sprite):
         if dir == "stop left":
             self.headingx = "left"
             self.speedx = 0
+        if dir == "jump":
+            if not self.jumping:
+                self.jumping = True
+                self.headingy = "up"
+                self.jumpSpeed = self.jumpSpeedMax
+                self.speedy = -self.jumpSpeed
+                self.headingChanged = True
+                self.touchingFloor = False
         if dir == "up":
             self.headingy = "up"
             self.speedy = -self.maxSpeed

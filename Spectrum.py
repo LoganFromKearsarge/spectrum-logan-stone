@@ -6,7 +6,8 @@ from Block import Block
 from Player import Player
 from HardBlock import HardBlock
 from PortalBlock import PortalBlock
-from ShadeBlock import ShadeBlock
+from BlackBlock import BlackBlock
+from WhiteBlock import WhiteBlock
 from Spike import Spike
 from Enemy import Enemy
 from Background import Background
@@ -27,7 +28,8 @@ bgColor = r,g,b = 0,0,0
 blocks = pygame.sprite.Group()
 hardBlocks = pygame.sprite.Group()
 portalBlocks = pygame.sprite.Group()
-shadeBlocks = pygame.sprite.Group()
+blackBlocks = pygame.sprite.Group()
+whiteBlocks = pygame.sprite.Group()
 spikes = pygame.sprite.Group()
 enemies = pygame.sprite.Group()
 backgrounds = pygame.sprite.Group()
@@ -38,7 +40,10 @@ Player.containers = (all, players)
 Block.containers = (all, blocks)
 HardBlock.containers = (all, hardBlocks, blocks)
 PortalBlock.containers = (all, portalBlocks, blocks)
-ShadeBlock.containers = (all, shadeBlocks, blocks)
+
+BlackBlock.containers = (all, blackBlocks, blocks)
+WhiteBlock.containers = (all, whiteBlocks, blocks)
+
 Spike.containers = (all, spikes, blocks)
 Enemy.containers = (all, enemies)
 Background.containers = (all, blocks)
@@ -73,43 +78,23 @@ def loadLevel(level):
     for y, line in enumerate(newlines):
         for x, c in enumerate(line):
             if c == "#":
-                HardBlock("rsc/blocks/black.png", 
+                HardBlock("rsc/blocks/block.png", 
                       [(x*blocksize[0])+blocksize[0]/2, (y*blocksize[1])+blocksize[1]/2], 
                       blocksize)
             elif c == "+":
                 PortalBlock("rsc/blocks/portal.png",
                       [(x*blocksize[0])+blocksize[0]/2, (y*blocksize[1])+blocksize[1]/2],
                       blocksize)
-            elif c == "r":
-                Block("rsc/blocks/red.png", 
-                      [(x*blocksize[0])+blocksize[0]/2, (y*blocksize[1])+blocksize[1]/2], 
-                      blocksize)
-            elif c == "b":
-                Block("rsc/blocks/blue.png", 
-                      [(x*blocksize[0])+blocksize[0]/2, (y*blocksize[1])+blocksize[1]/2], 
-                      blocksize)
-            elif c == "y":
-                Block("rsc/blocks/yellow.png", 
-                      [(x*blocksize[0])+blocksize[0]/2, (y*blocksize[1])+blocksize[1]/2], 
-                      blocksize)
-            elif c == "p":
-                Block("rsc/blocks/purple.png", 
-                      [(x*blocksize[0])+blocksize[0]/2, (y*blocksize[1])+blocksize[1]/2], 
-                      blocksize)
-            elif c == "g":
-                Block("rsc/blocks/green.png", 
-                      [(x*blocksize[0])+blocksize[0]/2, (y*blocksize[1])+blocksize[1]/2], 
-                      blocksize)
-            elif c == "o":
-                Block("rsc/blocks/orange.png", 
-                      [(x*blocksize[0])+blocksize[0]/2, (y*blocksize[1])+blocksize[1]/2], 
-                      blocksize)
             elif c == "x":
                 Spike("rsc/blocks/Obstacles/spike.png",
                       [(x*blocksize[0])+blocksize[0]/2, (y*blocksize[1])+blocksize[1]/2], 
                       blocksize)
-            elif c == "s":
-                ShadeBlock("rsc/blocks/shade.png",
+            elif c == "b":
+                BlackBlock("rsc/blocks/black.png",
+                      [(x*blocksize[0])+blocksize[0]/2, (y*blocksize[1])+blocksize[1]/2], 
+                      blocksize)
+            elif c == "w":
+                WhiteBlock("rsc/blocks/white.png",
                       [(x*blocksize[0])+blocksize[0]/2, (y*blocksize[1])+blocksize[1]/2], 
                       blocksize)
                       
@@ -174,45 +159,35 @@ while True:
             if event.type == pygame.QUIT:
                 sys.exit()
             if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_KP0:
-                    player1.change("white")
-                if event.key == pygame.K_KP1:
-                    player1.change("black")
-                if event.key == pygame.K_KP2:
-                    player1.change("red")
-                if event.key == pygame.K_KP3:
-                    player1.change("orange")
-                if event.key == pygame.K_KP4:
-                    player1.change("yellow")
-                if event.key == pygame.K_KP5:
-                    player1.change("green")
-                if event.key == pygame.K_KP6:
-                    player1.change("blue")
-                if event.key == pygame.K_KP7:
-                    player1.change("purple")
+                if event.key == pygame.K_SPACE:
+                    if player1.color.color == "white":
+                        player1.change("black")
+                    else:
+                        player1.change("white")
                     
                 if event.key == pygame.K_d or event.key == pygame.K_RIGHT:
                     player1.direction("right")
                 if event.key == pygame.K_a or event.key == pygame.K_LEFT:
                     player1.direction("left")
                 if event.key == pygame.K_w or event.key == pygame.K_UP:
-                    player1.direction("up")
-                if event.key == pygame.K_s or event.key == pygame.K_DOWN:
-                    player1.direction("down")
+                    player1.direction("jump")
+                #if event.key == pygame.K_s or event.key == pygame.K_DOWN:
+                #    player1.direction("down")
             if event.type == pygame.KEYUP:
                 if event.key == pygame.K_d or event.key == pygame.K_RIGHT:
                     player1.direction("stop right")
                 if event.key == pygame.K_a or event.key == pygame.K_LEFT:
                     player1.direction("stop left")
-                if event.key == pygame.K_w or event.key == pygame.K_UP:
-                    player1.direction("stop up")
-                if event.key == pygame.K_s or event.key == pygame.K_DOWN:
-                    player1.direction("stop down")
+                #if event.key == pygame.K_w or event.key == pygame.K_UP:
+                 #   player1.direction("stop up")
+                #if event.key == pygame.K_s or event.key == pygame.K_DOWN:
+                 #   player1.direction("stop down")
                     
         playersHitBlocks = pygame.sprite.groupcollide(players, hardBlocks, False, False)
         playersHitPortalBlocks = pygame.sprite.groupcollide(players, portalBlocks, False, False)
         playersHitSpikes = pygame.sprite.groupcollide(players, spikes, False, False)
-        playersHitShadeBlocks = pygame.sprite.groupcollide(players, shadeBlocks, False, False)
+        playersHitBlackBlocks = pygame.sprite.groupcollide(players, blackBlocks, False, False)
+        playersHitWhiteBlocks = pygame.sprite.groupcollide(players, whiteBlocks, False, False)
         
         enemiesHitBlocks = pygame.sprite.groupcollide(enemies, hardBlocks, False, False)
         enemiesHitEnemies = pygame.sprite.groupcollide(enemies, enemies, False, False)
@@ -229,11 +204,17 @@ while True:
                 
         for player in playersHitSpikes:
             for block in playersHitSpikes[player]:
-                player1.living = False
+                player1.collideSpikeBlock(block)
         
-        for player in playersHitShadeBlocks:
-            for block in playersHitShadeBlocks[player]:
-                player.collideBlock(block)
+        for player in playersHitBlackBlocks:
+            for block in playersHitBlackBlocks[player]:
+                if player.color.color == "white":
+                    player.collideBlock(block)
+        
+        for player in playersHitWhiteBlocks:
+            for block in playersHitWhiteBlocks[player]:
+                if player.color.color == "black":
+                    player.collideBlock(block)
         
         for enemy in enemiesHitBlocks:
             for block in enemiesHitBlocks[enemy]:
@@ -246,8 +227,6 @@ while True:
         all.update(size,
                    player1.speedx, 
                    player1.speedy, 
-                   player1.scrollingx, 
-                   player1.scrollingy,
                    player1.realx,
                    player1.realy)
         
