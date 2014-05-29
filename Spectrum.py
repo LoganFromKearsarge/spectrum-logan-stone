@@ -55,8 +55,16 @@ bg = Background("rsc/bg/mainbg.png", size)
 
 levels = ["rsc/levels/level1",
           "rsc/levels/level2",
-          "rsc/levels/level3"]
-level = 0
+          "rsc/levels/level3",
+          "rsc/levels/level4",
+          "rsc/levels/level5",
+          "rsc/levels/level6",
+          "rsc/levels/level7",
+          "rsc/levels/level8",
+          "rsc/levels/level9",
+          "rsc/levels/level10",
+          "rsc/levels/level11"]
+level = 5
 
 def loadLevel(level):
     f = open(level+".lvl", 'r')
@@ -72,6 +80,7 @@ def loadLevel(level):
                 newline += c
         newlines += [newline]
         
+    print level+".lvl"
     for line in newlines:
         print line
     
@@ -110,7 +119,8 @@ def loadLevel(level):
             if c != "\n":
                 newline += c
         newlines += [newline]
-        
+    
+    print level+".tng"
     for line in newlines:
         print line
     

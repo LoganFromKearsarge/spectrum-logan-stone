@@ -25,7 +25,7 @@ class Player(pygame.sprite.Sprite):
         self.realx = pos[0]
         self.realy = pos[1]
         self.headingx = "right"
-        self.headingy = "up"
+        self.headingy = "none"
         self.lastHeading = "right"
         self.headingChanged = False
         self.radius = self.rect.width/2
@@ -84,14 +84,16 @@ class Player(pygame.sprite.Sprite):
             
         
     def move(self):
-        if not self.touchFloor:
+        if not self.touchFloor and self.headingy != "up":
             self.headingy = "down"
             print "falling", self.speedy
-        if self.headingy == "down":
+        if self.headingy != "none":
             if self.speedy < self.fallSpeedMax:
                 self.speedy += self.g
             else:
                 self.speedy = self.fallSpeedMax
+            if self.speedy > 0:
+                self.headingy = "down"
                 
         self.realx += self.speedx
         self.realy += self.speedy
@@ -141,6 +143,7 @@ class Player(pygame.sprite.Sprite):
             self.touchFloor = True
             print "on the floor"
             self.jumping = False
+            self.headingy = "none"
         else:
             if self.realx < block.realx and self.headingx == "right":
                 self.speedx = 0
@@ -152,12 +155,20 @@ class Player(pygame.sprite.Sprite):
                 print "hit left"
             if self.realy > block.realy and self.headingy == "up":
                 self.speedy = 0
+                self.jumpSpeed = 0
                 self.realy += 1
+                self.headingy = "down"
                 print "hit up"
+                #time.sleep(.5)
+            print "--------------------------------------"
+            print self.realy, block.realy, self.realy < block.realy, self.headingy, self.headingy == "down"
+            #time.sleep(.5)
+            print "--------------------------------------"
             if self.realy < block.realy and self.headingy == "down":
                 self.touchFloor = True
-                self.speedy = 0
+                self.speedy = 0 
                 self.headingy = "none"
+                jumping = False
                 self.floor = block.rect.top+2
                 self.realy = self.floor - self.rect.height/2
                 print "///////////////////////hit down"
