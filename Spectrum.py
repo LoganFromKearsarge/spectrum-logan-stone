@@ -9,7 +9,6 @@ from PortalBlock import PortalBlock
 from BlackBlock import BlackBlock
 from WhiteBlock import WhiteBlock
 from Spike import Spike
-from Enemy import Enemy
 from Background import Background
 from Color import Color
 
@@ -64,7 +63,7 @@ levels = ["rsc/levels/level1",
           "rsc/levels/level9",
           "rsc/levels/level10",
           "rsc/levels/level11"]
-level = 5
+level = 0
 
 def loadLevel(level):
     f = open(level+".lvl", 'r')
@@ -130,13 +129,6 @@ def loadLevel(level):
                 player = Player([(x*blocksize[0])+blocksize[0]/2, (y*blocksize[1])+blocksize[1]/2],
                      playersize,
                      size)
-            elif c == "e":
-                Enemy("rsc/enemy/red guy.png", 
-                      [(x*blocksize[0])+blocksize[0]/2, (y*blocksize[1])+blocksize[1]/2], 
-                      playersize)
-    #for each in all.sprites():
-    #    each.fixLocation(player.offsetx, player.offsety)
-     
     
 def loadNextLevel(level):
     for each in all.sprites():
@@ -148,7 +140,6 @@ def loadNextLevel(level):
     
 loadLevel(levels[level])
 player1 = players.sprites()[0]
-
 
 start = False
 while True:
