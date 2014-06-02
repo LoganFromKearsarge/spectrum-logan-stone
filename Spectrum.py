@@ -44,7 +44,6 @@ BlackBlock.containers = (all, blackBlocks, blocks)
 WhiteBlock.containers = (all, whiteBlocks, blocks)
 
 Spike.containers = (all, spikes, blocks)
-Enemy.containers = (all, enemies)
 Background.containers = (all, blocks)
 
 bgColor = r,g,b = 0,0,0
@@ -217,13 +216,6 @@ while True:
                 if player.color.color == "black":
                     player.collideBlock(block)
         
-        for enemy in enemiesHitBlocks:
-            for block in enemiesHitBlocks[enemy]:
-                enemy.collideBlock(block)
-                
-        for enemy in enemiesHitEnemies:
-            for otherEnemy in enemiesHitEnemies[enemy]:
-                enemy.collideBlock(otherEnemy)
         
         all.update(size,
                    player1.speedx, 
