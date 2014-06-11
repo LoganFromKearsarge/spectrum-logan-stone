@@ -62,7 +62,7 @@ levels = ["rsc/levels/level1",
           "rsc/levels/level9",
           "rsc/levels/level10",
           "rsc/levels/level11"]
-level = 0
+level = 8
 
 def loadLevel(level):
     f = open(level+".lvl", 'r')
@@ -229,6 +229,7 @@ while True:
         clock.tick(30)
         
     bgImage = pygame.image.load("rsc/screen/EndScreen.png") 
+       
     while start and not player.living:   
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
